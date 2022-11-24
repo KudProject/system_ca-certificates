@@ -7,7 +7,6 @@ import (
 	"github.com/google/blueprint/proptools"
 
 	"android/soong/android"
-	"android/soong/etc"
 	"android/soong/phony"
 )
 
@@ -46,7 +45,7 @@ func caCertificatesLoadHook(
 		etcProps.Src = proptools.StringPtr(path.Join(*c.Src_dir, filename))
 		etcProps.Sub_dir = c.Dest_dir
 		etcProps.Filename = proptools.StringPtr(filename)
-		ctx.CreateModule(factory, &etcProps)
+		ctx.CreateModule(android.ModuleFactoryAdaptor(factory), &etcProps)
 
 		// Add it to the required module list of the parent phony rule.
 		requiredModuleNames[i] = moduleName
@@ -63,7 +62,7 @@ func caCertificatesFactory() android.Module {
 	p := phony.PhonyFactory()
 	c := &caCertificatesProperties{}
 	android.AddLoadHook(p, func(ctx android.LoadHookContext) {
-		caCertificatesLoadHook(ctx, etc.PrebuiltEtcFactory, c)
+		caCertificatesLoadHook(ctx, android.PrebuiltEtcFactory, c)
 	})
 	p.AddProperties(c)
 
@@ -74,7 +73,7 @@ func caCertificatesHostFactory() android.Module {
 	p := phony.PhonyFactory()
 	c := &caCertificatesProperties{}
 	android.AddLoadHook(p, func(ctx android.LoadHookContext) {
-		caCertificatesLoadHook(ctx, etc.PrebuiltEtcHostFactory, c)
+		caCertificatesLoadHook(ctx, android.PrebuiltEtcHostFactory, c)
 	})
 	p.AddProperties(c)
 
